@@ -1,0 +1,5 @@
+To Do:
+- Phong shading with Point Lights
+- Multi-Sampled Anti-Aliasing
+- Plane Class and intersections
+- 
