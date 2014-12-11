@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h> // GLFW helper library
 #include <stdio.h>
 
+#include "OpenGLShader.hpp"
+
 int main () {
    // start GL context and O/S window using the GLFW helper library
    if (!glfwInit ()) 
@@ -10,7 +12,6 @@ int main () {
       return 1;
    } 
 
-   // uncomment these lines if on Apple OS X
    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -28,12 +29,6 @@ int main () {
    // start GLEW extension handler
    glewExperimental = GL_TRUE;
    glewInit ();
-
-   // get version info
-   const GLubyte* renderer = glGetString (GL_RENDERER); // get renderer string
-   const GLubyte* version = glGetString (GL_VERSION); // version as a string
-   printf ("Renderer: %s\n", renderer);
-   printf ("OpenGL version supported %s\n", version);
 
    // tell GL to only draw onto a pixel if the shape is closer to the viewer
    glEnable (GL_DEPTH_TEST); // enable depth-testing
@@ -61,37 +56,13 @@ int main () {
    glBindBuffer (GL_ARRAY_BUFFER, vbo);
    glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-   const char* vertex_shader =
-   "#version 400\n"
-   "in vec3 vp;"
-   "void main () {"
-   "  gl_Position = vec4 (vp, 1.0);"
-   "}";
-
-   const char* fragment_shader =
-   "#version 400\n"
-   "out vec4 frag_colour;"
-   "void main () {"
-   "  frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
-   "}";
-
-   GLuint vs = glCreateShader (GL_VERTEX_SHADER);
-   glShaderSource (vs, 1, &vertex_shader, NULL);
-   glCompileShader (vs);
-   GLuint fs = glCreateShader (GL_FRAGMENT_SHADER);
-   glShaderSource (fs, 1, &fragment_shader, NULL);
-   glCompileShader (fs);
-
-   GLuint shader_programme = glCreateProgram ();
-   glAttachShader (shader_programme, fs);
-   glAttachShader (shader_programme, vs);
-   glLinkProgram (shader_programme);
+   GLuint shaderProgram = loadShader("VertexShader.glsl","FragmentShader.glsl");
 
    while (!glfwWindowShouldClose (window)) 
    {
       // wipe the drawing surface clear
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glUseProgram (shader_programme);
+      glUseProgram (shaderProgram);
       glBindVertexArray (vao);
       // draw points 0-3 from the currently bound VAO with current in-use shader
       glDrawArrays (GL_TRIANGLES, 0, 3);
