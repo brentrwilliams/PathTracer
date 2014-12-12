@@ -1,5 +1,6 @@
 To Do:
-- Phong shading with Point Lights
-- Multi-Sampled Anti-Aliasing
+- Texture mapping in OpenGL
+- Real time stratified sampling test
+- Real time stratified sampling path tracing
+- Perspective Camera Projection
 - Plane Class and intersections
-- 

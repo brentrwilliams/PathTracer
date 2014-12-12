@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <sstream> 
+#include <vector>
 
 GLuint loadShader(const char* vertexShaderName, const char* fragmentShaderName);
 

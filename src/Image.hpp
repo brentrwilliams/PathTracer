@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream> 
+#include <GL/glew.h>
 
 using namespace glm; 
 using namespace std;
@@ -51,6 +52,7 @@ class Image
       vec3 getColor(int x, int y);   
       void setColor(int x, int y, float newR, float newG, float newB);
       void setColor(int x, int y, const vec3& color);
+      GLuint getOpenGLTexture();
 };
 
 #endif

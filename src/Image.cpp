@@ -216,3 +216,42 @@ void Image::setColor(int x, int y, const vec3& color)
    g[index] = color.g;
    b[index] = color.b;
 }
+
+GLuint Image::getOpenGLTexture()
+{
+   unsigned char* image = new unsigned char [width*height*3];
+   unsigned int i, j;
+   for (i = 0; i < width; i++)
+   {
+      for (j = 0; j < height; j++)
+      {
+         unsigned int index = index2D(i,j);
+         unsigned int rgbBaseIndex = index * 3;
+         image[rgbBaseIndex+0] = (unsigned char) (r[index] * 255);
+         image[rgbBaseIndex+1] = (unsigned char) (g[index] * 255);
+         image[rgbBaseIndex+2] = (unsigned char) (b[index] * 255);
+      }
+   }
+
+   GLuint textureID;
+   glGenTextures(1, &textureID);
+ 
+   // "Bind" the newly created texture : all future texture functions will modify this texture
+   glBindTexture(GL_TEXTURE_2D, textureID);
+    
+   // Give the image to OpenGL
+   glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+   delete[] image;
+   return textureID;
+}
+
+
+
+
+
+
+
