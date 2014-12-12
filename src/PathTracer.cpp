@@ -10,13 +10,18 @@ PathTracer::PathTracer(unsigned int width, unsigned int height) :image(width,hei
 {
    this->imageWidth = width;
    this->imageHeight = height;
+   this->fillColor = glm::vec3(0,0,0);
+   traceCount = 0;
+   srand(time(NULL));
 }
 
 PathTracer::PathTracer(unsigned int width, unsigned int height, glm::vec3 fillColor) :image(width,height)
 {
    this->imageWidth = width;
    this->imageHeight = height;
-   image.fill(fillColor);
+   this->fillColor = fillColor;
+   traceCount = 0;
+   srand(time(NULL));
 }
 
 PathTracer::~PathTracer()
@@ -43,7 +48,9 @@ void PathTracer::trace()
          float t = 0.0f;
 
          // Orthographic Projection
-         vec3 position(float(x) - halfWidth, float(y) - halfHeight, -1000);
+         float jitterX = ((float) (rand())) / ((float)RAND_MAX);
+         float jitterY = ((float) (rand())) / ((float)RAND_MAX);
+         vec3 position(float(x) - halfWidth + jitterX, float(y) - halfHeight + jitterY, -1000);
          vec3 direction(0, 0, 1);
          Ray ray(position, direction);
 
@@ -54,14 +61,50 @@ void PathTracer::trace()
 
             //cout << "(" << x << ", " << y << ")\n";
             vec3 color = phongMat.calculateSurfaceColor(ray, hitPosition, normal);
-            image.setColor(x,y, color);
+            image.addColor(x,y, color);
+         }
+         else
+         {
+            image.addColor(x,y, fillColor);
          }
       }
    }   
 
+   traceCount++;
 }
 
 void PathTracer::writeImage(const char* imageName)
 {
-   image.writeTGA(imageName);
+   if (traceCount == 0)
+   {
+      image.writeTGA(imageName);
+   }
+   image.writeTGA(imageName, traceCount);
+}
+
+GLuint PathTracer::getOpenGLTexture()
+{
+   if (traceCount == 0)
+   {
+      return image.getOpenGLTexture();
+   }
+   return image.getOpenGLTexture(traceCount);
+}
+
+void PathTracer::updateOpenGLTexture(GLuint textureID)
+{
+   if (traceCount == 0)
+   {
+      return image.updateOpenGLTexture(textureID);
+   }
+   return image.updateOpenGLTexture(textureID, traceCount);
+}
+
+// Probably suscpetible to race conditions...
+void PathTracer::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+   if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+   {
+      writeImage("out.tga");
+   }
 }

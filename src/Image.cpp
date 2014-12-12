@@ -107,7 +107,7 @@ void Image::readTGA(const char *filename)
  * 
  * Note: The bottom left corner is (0, 0)
  **/
-void Image::writeTGA(const char *filename)
+void Image::writeTGA(const char *filename, unsigned int divisor)
 {
    FILE *fp;
    int x, y;
@@ -153,11 +153,11 @@ void Image::writeTGA(const char *filename)
       for (x = 0; x < width; x++)
       {
          unsigned int index = index2D(x,y);
-         fputc(((char)(b[index]*255)),fp);
+         fputc(((char)(b[index]*255/divisor)),fp);
          /* G (Green) value */
-         fputc(((char)(g[index]*255)),fp);
+         fputc(((char)(g[index]*255/divisor)),fp);
          /* R (Red) value */
-         fputc(((char)(r[index]*255)),fp);
+         fputc(((char)(r[index]*255/divisor)),fp);
       }
    }
    
@@ -217,7 +217,23 @@ void Image::setColor(int x, int y, const vec3& color)
    b[index] = color.b;
 }
 
-GLuint Image::getOpenGLTexture()
+void Image::addColor(int x, int y, float newR, float newG, float newB)
+{
+   unsigned int index = index2D(x,y);
+   r[index] += newR;
+   g[index] += newG;
+   b[index] += newB;
+}
+
+void Image::addColor(int x, int y, const vec3& color)
+{
+   unsigned int index = index2D(x,y);
+   r[index] += color.r;
+   g[index] += color.g;
+   b[index] += color.b;
+}
+
+GLuint Image::getOpenGLTexture(unsigned int divisor)
 {
    unsigned char* image = new unsigned char [width*height*3];
    unsigned int i, j;
@@ -227,9 +243,9 @@ GLuint Image::getOpenGLTexture()
       {
          unsigned int index = index2D(i,j);
          unsigned int rgbBaseIndex = index * 3;
-         image[rgbBaseIndex+0] = (unsigned char) (r[index] * 255);
-         image[rgbBaseIndex+1] = (unsigned char) (g[index] * 255);
-         image[rgbBaseIndex+2] = (unsigned char) (b[index] * 255);
+         image[rgbBaseIndex+0] = (unsigned char) ( (r[index]/divisor) * 255);
+         image[rgbBaseIndex+1] = (unsigned char) ( (g[index]/divisor) * 255);
+         image[rgbBaseIndex+2] = (unsigned char) ( (b[index]/divisor) * 255);
       }
    }
 
@@ -249,6 +265,27 @@ GLuint Image::getOpenGLTexture()
    return textureID;
 }
 
+void Image::updateOpenGLTexture(GLuint textureID, unsigned int divisor)
+{
+   unsigned char* image = new unsigned char [width*height*3];
+   unsigned int i, j;
+   for (i = 0; i < width; i++)
+   {
+      for (j = 0; j < height; j++)
+      {
+         unsigned int index = index2D(i,j);
+         unsigned int rgbBaseIndex = index * 3;
+         image[rgbBaseIndex+0] = (unsigned char) ( (r[index]/divisor) * 255);
+         image[rgbBaseIndex+1] = (unsigned char) ( (g[index]/divisor) * 255);
+         image[rgbBaseIndex+2] = (unsigned char) ( (b[index]/divisor) * 255);
+      }
+   }
+
+   glBindTexture(GL_TEXTURE_2D, textureID);
+   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+   delete[] image;
+}
 
 void Image::fill(vec3 color)
 {

@@ -1,10 +1,10 @@
-#include <GL/glew.h> // include GLEW and new version of GL on Windows
-#include <GLFW/glfw3.h> // GLFW helper library
-#include <stdio.h>
+#include "GLFWTest.hpp"
 
-#include "Image.hpp"
-#include "OpenGLShader.hpp"
-#include "PathTracer.hpp"
+void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+   PathTracer* pathTracer = reinterpret_cast<PathTracer *>(glfwGetWindowUserPointer(window));
+   pathTracer->keyboardCallback(window, key, scancode, action, mods);
+}
 
 int main (int argc, char const *argv[])
 {
@@ -37,6 +37,7 @@ int main (int argc, char const *argv[])
       return 1;
    }
    glfwMakeContextCurrent (window);
+   glfwSetKeyCallback(window, keyboardCallback);
                                   
    // start GLEW extension handler
    glewExperimental = GL_TRUE;
@@ -67,13 +68,13 @@ int main (int argc, char const *argv[])
 
    static const GLfloat g_uv_buffer_data[] =
    {
+      1.0f, 1.0f,
       1.0f, 0.0f,
-      1.0f, 1.0f,
-      0.0f, 0.0f,
-
-      1.0f, 1.0f,
       0.0f, 1.0f,
+
+      1.0f, 0.0f,
       0.0f, 0.0f,
+      0.0f, 1.0f,
    };
 
 
@@ -90,16 +91,20 @@ int main (int argc, char const *argv[])
 
    glm::vec3 fillColor(169.0f/255.0f, 213.0f/255.0f, 235.0f/255.0f);
    PathTracer pathTracer(width, height, fillColor);
-   pathTracer.trace();
-   pathTracer.writeImage("out.tga");
 
-   GLuint texture = pathTracer.image.getOpenGLTexture();
+   // Pass the window a pointer to the path tracer so we can access its variables in callbacks
+   glfwSetWindowUserPointer(window, &pathTracer);
+
+   GLuint texture = pathTracer.getOpenGLTexture();
    
    // Get a handle for our "myTextureSampler" uniform
    GLuint TextureID  = glGetUniformLocation(shaderProgram, "myTextureSampler");
 
    while (!glfwWindowShouldClose (window)) 
    {
+      pathTracer.trace();
+      pathTracer.updateOpenGLTexture(texture);
+
       // wipe the drawing surface clear
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glUseProgram (shaderProgram);
