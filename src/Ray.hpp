@@ -22,7 +22,6 @@ class Ray
       Ray(const glm::vec3& position, const glm::vec3& direction);
       ~Ray();
 
-
 };
 
 

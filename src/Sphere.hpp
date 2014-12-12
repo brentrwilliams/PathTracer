@@ -27,6 +27,7 @@ class Sphere
       Sphere(const glm::vec3& position, float radius);
       ~Sphere();
       bool intersect(const Ray& ray, float& t);
+      glm::vec3 getNormal(glm::vec3 point);
 };
 
 

@@ -15,6 +15,7 @@
 #include "Ray.hpp"
 #include "Sphere.hpp"
 #include "Image.hpp"
+#include "PhongMaterial.hpp"
 
 using namespace glm; 
 using namespace std;

@@ -57,3 +57,8 @@ bool Sphere::intersect(const Ray& ray, float& t)
 
    return returnValue;
 }
+
+glm::vec3 Sphere::getNormal(glm::vec3 point)
+{
+   return glm::normalize(point - position);
+}
