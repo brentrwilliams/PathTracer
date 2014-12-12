@@ -15,15 +15,15 @@ int main () {
       return 1;
    } 
 
-   unsigned int windowWidth = 512;
-   unsigned int windowHeight = 512;
+   unsigned int width = 640;
+   unsigned int height = 480;
 
    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
    glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-   GLFWwindow* window = glfwCreateWindow (windowWidth, windowHeight, "Path Tracer", NULL, NULL);
+   GLFWwindow* window = glfwCreateWindow (width, height, "Path Tracer", NULL, NULL);
    if (!window) 
    {
       fprintf (stderr, "ERROR: could not open window with GLFW3\n");
@@ -50,13 +50,13 @@ int main () {
 
    static const GLfloat g_vertex_buffer_data[] = 
    {
-      0.5f,  0.5f,  0.0f,
-      0.5f, -0.5f,  0.0f,
-      -0.5f, 0.5f,  0.0f, 
+      1.0f,  1.0f,  0.0f,
+      1.0f, -1.0f,  0.0f,
+      -1.0f, 1.0f,  0.0f, 
 
-      0.5f, -0.5f,  0.0f,
-      -0.5f,  -0.5f,  0.0f,
-      -0.5f, 0.5f,  0.0f, 
+      1.0f, -1.0f,  0.0f,
+      -1.0f,  -1.0f,  0.0f,
+      -1.0f, 1.0f,  0.0f, 
    };
 
    static const GLfloat g_uv_buffer_data[] =
@@ -81,29 +81,11 @@ int main () {
    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
-   // Image image(windowWidth, windowHeight);
 
-   // for (int i = 0; i < windowWidth; i++)
-   // {
-   //    for (int j = 0; j < windowHeight; j++)
-   //    {
-   //       if (i <= 256 && j <= 256)
-   //       {
-   //          image.setColor(i,j, 1,0,0);
-   //       }
-   //       else if (i > 256 && j <= 256)
-   //       {
-   //          image.setColor(i,j, 0,1,0);
-   //       }
-   //       else if (i <= 256 && j > 256)
-   //       {
-   //          image.setColor(i,j, 0,0,1);
-   //       }
-   //    }
-   // }
-
-   PathTracer pathTracer(512,512);
+   glm::vec3 fillColor(169.0f/255.0f, 213.0f/255.0f, 235.0f/255.0f);
+   PathTracer pathTracer(width, height, fillColor);
    pathTracer.trace();
+   pathTracer.writeImage("out.tga");
 
    GLuint texture = pathTracer.image.getOpenGLTexture();
    

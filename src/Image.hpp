@@ -13,8 +13,8 @@
 #include <iostream> 
 #include <GL/glew.h>
 
-using namespace glm; 
 using namespace std;
+using namespace glm;
 
 typedef struct {
    char  idlength;
@@ -51,8 +51,9 @@ class Image
       void scaleColors();
       vec3 getColor(int x, int y);   
       void setColor(int x, int y, float newR, float newG, float newB);
-      void setColor(int x, int y, const vec3& color);
+      void setColor(int x, int y, const glm::vec3& color);
       GLuint getOpenGLTexture();
+      void fill(vec3 color);
 };
 
 #endif

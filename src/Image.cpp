@@ -250,7 +250,20 @@ GLuint Image::getOpenGLTexture()
 }
 
 
-
+void Image::fill(vec3 color)
+{
+   int i,j;
+   for (i = 0; i < width; i++)
+   {
+      for (j = 0; j < height; j++)
+      {
+         unsigned int index = index2D(i,j);
+         r[index] = color.x;
+         g[index] = color.y;
+         b[index] = color.z;
+      }
+   }
+}
 
 
 

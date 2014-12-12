@@ -12,6 +12,13 @@ PathTracer::PathTracer(unsigned int width, unsigned int height) :image(width,hei
    this->imageHeight = height;
 }
 
+PathTracer::PathTracer(unsigned int width, unsigned int height, glm::vec3 fillColor) :image(width,height)
+{
+   this->imageWidth = width;
+   this->imageHeight = height;
+   image.fill(fillColor);
+}
+
 PathTracer::~PathTracer()
 {
 
@@ -52,4 +59,9 @@ void PathTracer::trace()
       }
    }   
 
+}
+
+void PathTracer::writeImage(const char* imageName)
+{
+   image.writeTGA(imageName);
 }

@@ -27,8 +27,10 @@ public:
    Image image;
 
    PathTracer(unsigned int width, unsigned int height);
+   PathTracer(unsigned int width, unsigned int height, glm::vec3 fillColor);
    ~PathTracer();
    void trace();
+   void writeImage(const char *imageName);
 };
 
 
