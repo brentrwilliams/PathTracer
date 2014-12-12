@@ -6,17 +6,23 @@
 #include "OpenGLShader.hpp"
 #include "PathTracer.hpp"
 
-
-int main () {
+int main (int argc, char const *argv[])
+{
    // start GL context and O/S window using the GLFW helper library
    if (!glfwInit ()) 
    {
       fprintf (stderr, "ERROR: could not start GLFW3\n");
       return 1;
-   } 
+   }
 
    unsigned int width = 640;
    unsigned int height = 480;
+
+   if (argc == 3)
+   {
+      width = atoi(argv[1]);
+      width = atoi(argv[2]);
+   }
 
    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
