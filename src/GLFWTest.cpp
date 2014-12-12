@@ -61,13 +61,13 @@ int main () {
 
    static const GLfloat g_uv_buffer_data[] =
    {
+      1.0f, 0.0f,
       1.0f, 1.0f,
-      1.0f, 0.0f,
-      0.0f, 1.0f,
-
-      1.0f, 0.0f,
       0.0f, 0.0f,
+
+      1.0f, 1.0f,
       0.0f, 1.0f,
+      0.0f, 0.0f,
    };
 
 
@@ -103,12 +103,21 @@ int main () {
    }
 
    GLuint texture = image.getOpenGLTexture();
+   
+   // Get a handle for our "myTextureSampler" uniform
+   GLuint TextureID  = glGetUniformLocation(shaderProgram, "myTextureSampler");
 
    while (!glfwWindowShouldClose (window)) 
    {
       // wipe the drawing surface clear
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glUseProgram (shaderProgram);
+
+      // Bind our texture in Texture Unit 0
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      // Set our "myTextureSampler" sampler to use Texture Unit 0
+      glUniform1i(TextureID, 0);
 
       // 1rst attribute buffer : vertices
       glEnableVertexAttribArray(0);
@@ -148,6 +157,7 @@ int main () {
    glDeleteBuffers(1, &vertexbuffer);
    glDeleteBuffers(1, &uvbuffer);
    glDeleteProgram(shaderProgram);
+   glDeleteTextures(1, &TextureID);
    glDeleteVertexArrays(1, &VertexArrayID);
    /* OTHER STUFF ENDS HERE */
   
