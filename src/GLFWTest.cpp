@@ -4,7 +4,7 @@
 
 #include "Image.hpp"
 #include "OpenGLShader.hpp"
-
+#include "PathTracer.hpp"
 
 
 int main () {
@@ -81,28 +81,31 @@ int main () {
    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
-   Image image(windowWidth, windowHeight);
+   // Image image(windowWidth, windowHeight);
 
-   for (int i = 0; i < windowWidth; i++)
-   {
-      for (int j = 0; j < windowHeight; j++)
-      {
-         if (i <= 256 && j <= 256)
-         {
-            image.setColor(i,j, 1,0,0);
-         }
-         else if (i > 256 && j <= 256)
-         {
-            image.setColor(i,j, 0,1,0);
-         }
-         else if (i <= 256 && j > 256)
-         {
-            image.setColor(i,j, 0,0,1);
-         }
-      }
-   }
+   // for (int i = 0; i < windowWidth; i++)
+   // {
+   //    for (int j = 0; j < windowHeight; j++)
+   //    {
+   //       if (i <= 256 && j <= 256)
+   //       {
+   //          image.setColor(i,j, 1,0,0);
+   //       }
+   //       else if (i > 256 && j <= 256)
+   //       {
+   //          image.setColor(i,j, 0,1,0);
+   //       }
+   //       else if (i <= 256 && j > 256)
+   //       {
+   //          image.setColor(i,j, 0,0,1);
+   //       }
+   //    }
+   // }
 
-   GLuint texture = image.getOpenGLTexture();
+   PathTracer pathTracer(512,512);
+   pathTracer.trace();
+
+   GLuint texture = pathTracer.image.getOpenGLTexture();
    
    // Get a handle for our "myTextureSampler" uniform
    GLuint TextureID  = glGetUniformLocation(shaderProgram, "myTextureSampler");

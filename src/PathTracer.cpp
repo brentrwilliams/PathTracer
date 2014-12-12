@@ -6,14 +6,21 @@
 
 #include "PathTracer.hpp"
 
-int main(int argc, char const *argv[])
+PathTracer::PathTracer(unsigned int width, unsigned int height) :image(width,height)
 {
-   unsigned int imageWidth = 500;
-   unsigned int imageHeight = 500;
+   this->imageWidth = width;
+   this->imageHeight = height;
+}
+
+PathTracer::~PathTracer()
+{
+
+}
+
+void PathTracer::trace()
+{
    float halfWidth = float(imageWidth) / 2.0f;
    float halfHeight = float(imageHeight) / 2.0f;
-   
-   Image image(imageWidth, imageHeight);
    Sphere sphere(vec3(0,0,0), 100.0f);
 
    glm::vec3 ka(0,0.1,0);
@@ -45,7 +52,4 @@ int main(int argc, char const *argv[])
       }
    }   
 
-   image.writeTGA("out.tga");
-
-   return 0;
 }

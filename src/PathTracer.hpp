@@ -17,8 +17,19 @@
 #include "Image.hpp"
 #include "PhongMaterial.hpp"
 
-using namespace glm; 
 using namespace std;
+
+class PathTracer
+{
+public:
+   unsigned int imageWidth;
+   unsigned int imageHeight;
+   Image image;
+
+   PathTracer(unsigned int width, unsigned int height);
+   ~PathTracer();
+   void trace();
+};
 
 
 #endif
